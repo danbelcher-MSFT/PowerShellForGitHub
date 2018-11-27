@@ -866,7 +866,14 @@ filter ConvertTo-SmarterObject
             # Convert known date properties from dates to real DateTime objects
             if ($property.Name -in $script:datePropertyNames)
             {
-                $property.Value = Get-Date -Date $property.Value
+                try
+                {
+                    $property.Value = Get-Date -Date $property.Value
+                }
+                catch
+                {
+                    Write-Log -Message "Unable to convert $($property.Name) value of $($property.Value) to a [DateTime] object.  Leaving as-is." -Level Verbose
+                }
             }
 
             if (($property.Value -is [array]) -or ($property.Value -is [PSCustomObject]))
